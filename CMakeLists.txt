@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(mhap_cpp)
 
 set(CMAKE_CXX_STANDARD 17)
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
 
 #Boost
 find_package(Boost COMPONENTS unit_test_framework REQUIRED)
@@ -20,8 +20,6 @@ add_library(mhap_cpp_lib
 add_executable(mhap_cpp
         src/main.cpp
         )
-
-
 
 add_executable(test_mhap_cpp
         tests/test_main.cpp

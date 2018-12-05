@@ -61,12 +61,12 @@ double BottomOverlapSketch::computeKBottomSketchJaccard(const KmerHashes &seq1Ha
 
     int32_t s2 = 0;
     //get k for second sequence
-    KmerHashes array2{seq1Hashes.size()};
+    KmerHashes array2{seq2Hashes.size()};
     for (size_t j = 0; j < seq2Hashes.size(); ++j) {
         int32_t pos = seq2Hashes[j].pos;
 
         if (pos >= b1 && pos <= b2) {
-            array2[s2] = seq1Hashes[j];
+            array2[s2] = seq2Hashes[j];
             ++s2;
         }
     }

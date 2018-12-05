@@ -33,7 +33,7 @@ EdgeDataPtr MatchData::computeEdges() {
 
     for (int32_t iter = 0; iter < count; ++iter) {
         int32_t pos1 = pos1Index_[iter];
-        int32_t pos2 = pos1Index_[iter];
+        int32_t pos2 = pos2Index_[iter];
 
         if (std::abs(posShift_[iter] - medianShift) > absMaxShiftInOverlap) {
             continue;
@@ -154,7 +154,7 @@ void MatchData::performUpdate() {
 }
 
 void MatchData::recordMatch(int32_t pos1, int32_t pos2, int32_t shift) {
-    if (posShift_.size() < static_cast<size_t>(count_)) {
+    if (posShift_.size() <= static_cast<size_t>(count_)) {
         posShift_.resize(posShift_.size() * 2, 0);
         pos1Index_.resize(pos1Index_.size() * 2, 0);
         pos2Index_.resize(pos2Index_.size() * 2, 0);
