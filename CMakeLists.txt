@@ -33,6 +33,7 @@ add_executable(test_mhap_cpp
         tests/test_MatchData.cpp
         tests/test_MinHashSketch.cpp
         tests/test_BottomOverlapSketch.cpp
+        tests/test_SequenceSketchStreamer.cpp
         )
 
 target_link_libraries(test_mhap_cpp
