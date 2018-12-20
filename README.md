@@ -1,22 +1,18 @@
 # MHAP
+This repository contains simplified, cleaned-up and rewritten in modern C++ version of https://github.com/marbl/MHAP:
 
-MinHash alignment process (MHAP pronounced MAP): locality sensitive hashing to detect overlaps and utilities. This is the development branch, please use the [latest tagged](https://github.com/marbl/MHAP/releases/tag/v2.1.1).
+MinHash alignment process (MHAP pronounced MAP): locality sensitive hashing to detect overlaps and utilities.
 
 ## Build
 
-You must have a recent  [JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html "JDK") and [Apache Maven](http://maven.apache.org/ "MAVEN") available. To checkout and build run:
+You must have a [CMake](https://cmake.org/ "CMake") supporting C++17 and [Boost Libraries](http://boost.org/ "Boost") installed on your system. To checkout and build run:
 
-    git clone https://github.com/marbl/MHAP.git
-    cd MHAP
-    mvn install
-    
-Maven executables vary by system, it could also be maven/mvn/mv32, depending on your installation. For a quick user-quide, run:
-
-    cd target
-    java -jar mhap-2.1.3.jar
-
-## Docs
-For the full documentation information please see http://mhap.readthedocs.io/en/latest/
+    git clone https://github.com/formateu/mhap-cpp
+    cd mhap-cpp
+    mkdir build
+    cd build
+    cmake ..
+    make
 
 ## Cite
  - Berlin K, Koren S, Chin CS, Drake PJ, Landolin JM, Phillippy AM [Assembling Large Genomes with Single-Molecule Sequencing and Locality Sensitive Hashing](http://www.nature.com/nbt/journal/v33/n6/abs/nbt.3238.html "nb"). Nature Biotechnology. (2015).
