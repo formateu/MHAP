@@ -16,7 +16,7 @@ public:
                         bool doReverseCompliment);
 
     BottomOverlapSketch(const BottomOverlapSketch &oth) = delete;
-    BottomOverlapSketch(BottomOverlapSketch &&oth) = delete;
+    BottomOverlapSketch(BottomOverlapSketch &&oth) = default;
 
     std::size_t sequenceSize() const { return seqLength_; }
     std::size_t size() const { return orderedHashes_.size(); }

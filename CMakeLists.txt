@@ -15,6 +15,7 @@ add_library(mhap_cpp_lib
         src/MatchData.cpp
         src/BottomOverlapSketch.cpp
         src/SequenceSketchStreamer.cpp
+        src/MinHashSearch.cpp
         )
 
 add_executable(mhap_cpp

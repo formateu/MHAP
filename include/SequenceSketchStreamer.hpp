@@ -1,8 +1,10 @@
 #ifndef SequenceSketchStreamer_HPP
 #define SequenceSketchStreamer_HPP
 
-#include "SequenceStreamer.hpp"
+#include <deque>
 #include <string>
+#include "SequenceStreamer.hpp"
+#include "SequenceSketch.hpp"
 
 class SequenceSketchStreamer {
 public:
@@ -14,7 +16,15 @@ public:
                            size_t orderedSketchSize,
                            bool doReverseCompliment,
                            double repeatWeight);
+
+    SequenceSketchPtr dequeue(bool fwdOnly);
+    void enqueueFull(bool fwdOnly);
+    SequenceSketchPtr getSketch(const Sequence &seq);
+protected:
+    bool enqueue(bool fwdOnly);
+    bool enqueueUntilFound(bool fwdOnly);
 private:
+    std::deque<SequenceSketchPtr> sequenceHashDeque_;
     SequenceStreamer fastaData_;
     size_t minOlapLength_;
     size_t kmerSize_;

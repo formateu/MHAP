@@ -14,7 +14,7 @@ public:
                   double repeatWeight);
 
     MinHashSketch(const MinHashSketch &oth) = delete;
-    MinHashSketch(MinHashSketch &&oht) = delete;
+    MinHashSketch(MinHashSketch &&oht) = default;
 
     const std::vector<uint32_t> &getMinHashArray() const { return minHashes_; }
 protected:

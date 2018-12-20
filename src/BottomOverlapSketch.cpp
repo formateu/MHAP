@@ -45,7 +45,7 @@ double BottomOverlapSketch::computeKBottomSketchJaccard(const KmerHashes &seq1Ha
                                                         int32_t b2) {
 
     int32_t s1 = 0;
-    //TODO: rethink how to not copy array here (not necessary at all)
+    //TODO: rethink how to not copy struct here (not necessary at all)
     //maybe pointers, but dirty when using smart ptrs
     KmerHashes array1{seq1Hashes.size()};
 
@@ -250,6 +250,9 @@ OverlapInfo BottomOverlapSketch::getOverlapInfo(const BottomOverlapSketch &toSeq
         return OverlapInfo::empty();
     }
 
+
+    matchData.getMedianShift();
+    matchData.getAbsMaxShift();
     double score = computeKBottomSketchJaccard(orderedHashes_,
                                                toSequence.orderedHashes_,
 //                                               matchData.getMedianShift(),
@@ -264,5 +267,4 @@ OverlapInfo BottomOverlapSketch::getOverlapInfo(const BottomOverlapSketch &toSeq
     double rawScore = static_cast<double>(edgeData->count);
 
     return OverlapInfo(score, rawScore, edgeData->a1, edgeData->a2, edgeData->b1, edgeData->b2);
-
 }
