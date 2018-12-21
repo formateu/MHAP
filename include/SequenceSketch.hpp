@@ -19,10 +19,12 @@ public:
     SequenceSketch(SequenceSketch &&oth) = default;
 
     const MinHashSketch &getMinHashes() const { return mainHashes_; }
+    const BottomOverlapSketch &getOrderedHashes() const { return orderedHashes_; }
 
     const SequenceId &getSequenceId() const { return id_; }
     //for problem with std::pair creation from (const SequenceId &, SequenceSketch &&)
     SequenceId getSeqIdCopy() const { return id_; }
+    size_t getSequenceSize() const { return sequenceSize_; }
 private:
     size_t sequenceSize_;
     SequenceId id_;

@@ -21,8 +21,8 @@ public:
     std::size_t sequenceSize() const { return seqLength_; }
     std::size_t size() const { return orderedHashes_.size(); }
 
-    double jaccardToIdentity(double score, size_t kmerSize);
-    OverlapInfo getOverlapInfo(const BottomOverlapSketch &toSequence, double maxShiftPercent);
+    double jaccardToIdentity(double score, size_t kmerSize) const;
+    OverlapInfo getOverlapInfo(const BottomOverlapSketch &toSequence, double maxShiftPercent) const;
 
 protected:
     struct HashPosPair {
@@ -44,7 +44,7 @@ protected:
                                               int32_t b1,
                                               int32_t b2);
 
-    void recordMatchingKmers(MatchData &matchData, const KmerHashes &seqKmerHashes);
+    void recordMatchingKmers(MatchData &matchData, const KmerHashes &seqKmerHashes) const;
 };
 
 #endif //BottomOverlapSketch_HPP

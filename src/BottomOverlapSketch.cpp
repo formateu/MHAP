@@ -100,13 +100,13 @@ double BottomOverlapSketch::computeKBottomSketchJaccard(const KmerHashes &seq1Ha
     return intersectCount / static_cast<double>(k);
 }
 
-double BottomOverlapSketch::jaccardToIdentity(double score, size_t kmerSize) {
+double BottomOverlapSketch::jaccardToIdentity(double score, size_t kmerSize) const {
     double d = -1.0f / static_cast<double>(kmerSize) * std::log(2.0 * score / (1.0 + score));
     return std::exp(-d);
 }
 
 void BottomOverlapSketch::recordMatchingKmers(MatchData &matchData,
-                                              const KmerHashes &seqKmerHashes) {
+                                              const KmerHashes &seqKmerHashes) const {
     uint32_t hash1;
     uint32_t hash2;
     int32_t pos1;
@@ -221,7 +221,7 @@ void BottomOverlapSketch::recordMatchingKmers(MatchData &matchData,
 }
 
 OverlapInfo BottomOverlapSketch::getOverlapInfo(const BottomOverlapSketch &toSequence,
-                                                double maxShiftPercent) {
+                                                double maxShiftPercent) const {
     MatchData matchData{*this, toSequence, maxShiftPercent};
 
     //get the initial matches
@@ -264,7 +264,7 @@ OverlapInfo BottomOverlapSketch::getOverlapInfo(const BottomOverlapSketch &toSeq
 
     score = jaccardToIdentity(score, kmerSize_);
 
-    double rawScore = static_cast<double>(edgeData->count);
+    auto rawScore = static_cast<double>(edgeData->count);
 
     return OverlapInfo(score, rawScore, edgeData->a1, edgeData->a2, edgeData->b1, edgeData->b2);
 }
