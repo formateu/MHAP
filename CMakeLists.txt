@@ -20,9 +20,14 @@ add_library(mhap_cpp_lib
         src/MatchResult.cpp
         )
 
+target_include_directories(mhap_cpp_lib PRIVATE include)
+
 add_executable(mhap_cpp
         src/main.cpp
         )
+
+target_include_directories(mhap_cpp PRIVATE include)
+
 
 add_executable(test_mhap_cpp
         tests/test_main.cpp
@@ -37,6 +42,8 @@ add_executable(test_mhap_cpp
         tests/test_BottomOverlapSketch.cpp
         tests/test_SequenceSketchStreamer.cpp
         )
+
+target_include_directories(test_mhap_cpp PRIVATE include)
 
 target_link_libraries(test_mhap_cpp
         ${BOOST_UNIT_TEST_FRAMEWORK_LIBRARY}

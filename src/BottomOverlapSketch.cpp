@@ -1,7 +1,7 @@
-#include "../include/BottomOverlapSketch.hpp"
-#include "../include/HashUtils.hpp"
-#include "../include/MatchData.hpp"
-#include "../include/OverlapInfo.hpp"
+#include <BottomOverlapSketch.hpp>
+#include <HashUtils.hpp>
+#include <MatchData.hpp>
+#include <OverlapInfo.hpp>
 
 #include <algorithm>
 #include <numeric>

@@ -1,8 +1,15 @@
+/**
+ * @file EdgeData.hpp
+ * @brief t
+ */
 #ifndef EdgeData_HPP
 #define EdgeData_HPP
 
 #include <memory>
 
+/**
+ * TODO: complete documentation
+ */
 struct EdgeData {
     int32_t a1;
     int32_t a2;

@@ -2,8 +2,8 @@
 
 #include <string_view>
 #include <array>
-#include "../include/Sequence.hpp"
-#include "../include/MurmurHash3.h"
+#include <Sequence.hpp>
+#include <MurmurHash3.h>
 
 //TODO: avoid copypaste in these 2 functions
 

@@ -1,7 +1,5 @@
-#include "../include/SequenceStreamer.hpp"
-#include "../include/IOError.hpp"
-
-//SequenceStreamer::SequenceStreamer() : readAll_(false), index_(0U) {}
+#include <SequenceStreamer.hpp>
+#include <IOError.hpp>
 
 SequenceStreamer::SequenceStreamer(const std::string &filePath)
     : seqStream_(std::make_unique<std::ifstream>(filePath)), readAll_(false), index_(0U) {

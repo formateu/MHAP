@@ -2,8 +2,8 @@
 #include <limits>
 #include <cmath>
 
-#include "../include/MatchData.hpp"
-#include "../include/BottomOverlapSketch.hpp"
+#include <MatchData.hpp>
+#include <BottomOverlapSketch.hpp>
 //#include "../include/EdgeData.hpp"
 
 MatchData::MatchData(const BottomOverlapSketch &o1,
@@ -66,7 +66,7 @@ EdgeDataPtr MatchData::computeEdges() {
     // get edge info uniformly minimum variance unbiased (UMVU) estimators
     // a = (n*a-b)/(n-1)
     // b = (n*b-a)/(n-1)
-    double n_1 = static_cast<double>(validCount - 1);
+    auto n_1 = static_cast<double>(validCount - 1);
     double na1_b1 = std::round(validCount * leftEdge1 - rightEdge1);
     double nb1_a1 = std::round(validCount * rightEdge1 - leftEdge1);
     double na2_b2 = std::round(validCount * leftEdge2 - rightEdge2);

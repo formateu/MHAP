@@ -1,12 +1,12 @@
-#include "../include/MinHashSearch.hpp"
+#include <MinHashSearch.hpp>
 #include <utility>
 
-#include "../include/HitCounter.hpp"
+#include <HitCounter.hpp>
 
 MinHashSearch::MinHashSearch(SequenceSketchStreamer &data,
                              size_t numHashes,
                              size_t numMinMatches,
-                             bool storeResults,
+//                             bool storeResults,
                              size_t minStoreLength,
                              double maxShift,
                              double acceptScore,
@@ -63,12 +63,14 @@ std::list<MatchResult> MinHashSearch::findMatches() {
     while (!seqDeque.empty()) {
         const auto &sequenceHashes = sequenceVectorHash_.find(nextSequence)->second;
         matches.splice(matches.end(), findMatches(sequenceHashes, true));
-        auto nextSequence = seqDeque.back();
+        nextSequence = seqDeque.back();
         seqDeque.pop_back();
     }
 
     const auto &sequenceHashes = sequenceVectorHash_.find(nextSequence)->second;
-    auto localMatches = findMatches(sequenceHashes, true);
+    matches.splice(matches.end(), findMatches(sequenceHashes, true));
+
+    return matches;
 }
 
 std::list<MatchResult> MinHashSearch::findMatches(const SequenceSketch &seqHashes, bool toSelf) {
@@ -107,7 +109,7 @@ std::list<MatchResult> MinHashSearch::findMatches(const SequenceSketch &seqHashe
             continue;
         }
 
-        if (matchValue.count >= numMinMatches_) {
+        if (matchValue.count >= static_cast<int32_t>(numMinMatches_)) {
             const auto &matchedHashes = sequenceVectorHash_.find(matchId)->second;
 
             // never process short to short

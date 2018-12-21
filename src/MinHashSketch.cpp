@@ -1,6 +1,6 @@
-#include "../include/MinHashSketch.hpp"
-#include "../include/HashUtils.hpp"
-#include "../include/HitCounter.hpp"
+#include <MinHashSketch.hpp>
+#include <HashUtils.hpp>
+#include <HitCounter.hpp>
 
 #include <unordered_map>
 
@@ -69,7 +69,7 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
             //dunno which type is best here actually
             for (uint32_t count = 0; count < weight; ++count) {
                 // XORShift Random Number Generators
-                //https://www.javamex.com/tutorials/random_numbers/xorshift.shtml
+                // https://www.javamex.com/tutorials/random_numbers/xorshift.shtml
                 // probably from here ^^
                 x ^= (x << 21);
                 //unsigned shift from Java equivalent

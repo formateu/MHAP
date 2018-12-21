@@ -1,10 +1,11 @@
-#include "../include/SequenceSketch.hpp"
+#include <SequenceSketch.hpp>
+
 SequenceSketch::SequenceSketch(const Sequence &seq,
                                size_t kmerSize,
                                size_t numHashes,
                                size_t orderedKmerSize,
                                size_t orderedSketchSize,
-                               bool doReverseCompliment,
+//                               bool doReverseCompliment,
                                double repeatWeight)
     : sequenceSize_(seq.size())
       , id_(seq.id)

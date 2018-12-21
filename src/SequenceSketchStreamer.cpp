@@ -1,4 +1,5 @@
-#include "../include/SequenceSketchStreamer.hpp"
+#include <SequenceSketchStreamer.hpp>
+
 SequenceSketchStreamer::SequenceSketchStreamer(const std::string &filePath,
                                                size_t minOlapLength,
                                                size_t kmerSize,
@@ -42,7 +43,7 @@ SequenceSketchPtr SequenceSketchStreamer::getSketch(const Sequence &seq) {
                           numHashes_,
                           orderedKmerSize_,
                           orderedSketchSize_,
-                          doReverseCompliment_,
+//                          doReverseCompliment_,
                           repeatWeight_);
 }
 
@@ -51,7 +52,8 @@ bool SequenceSketchStreamer::enqueue(bool fwdOnly) {
     SequencePtr seq{nullptr};
 
     do {
-        seq = std::move(fastaData_.dequeue());
+        //according to clang 6.0.0 std::move usage here prevents copy elision
+        seq = fastaData_.dequeue();
     } while (seq && seq->size() < minOlapLength_);
 
     if (seq) {

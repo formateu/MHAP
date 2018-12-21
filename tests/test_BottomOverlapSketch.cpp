@@ -94,7 +94,7 @@ BOOST_AUTO_TEST_CASE(TestComparison) {
     BottomOverlapSketch b1(s1, 12, 1536, false);
     BottomOverlapSketch b2(s2, 12, 1536, false);
 
-    auto overlapInfo = b1.getOverlapInfo(b2, 0.2);
+//    auto overlapInfo = b1.getOverlapInfo(b2, 0.2);
 
 //    BOOST_CHECK_EQUAL(overlapInfo.score, 0.9603485527371235);
 //    BOOST_CHECK_EQUAL(overlapInfo.a1, 23);
@@ -111,7 +111,7 @@ BOOST_AUTO_TEST_CASE(TestComparison2) {
     BottomOverlapSketch b1(s1, 12, 1536, false);
     BottomOverlapSketch b2(s2, 12, 1536, false);
 
-    auto overlapInfo = b1.getOverlapInfo(b2, 0.2);
+//    auto overlapInfo = b1.getOverlapInfo(b2, 0.2);
 
 //    BOOST_CHECK_EQUAL(overlapInfo.score, 0.7790778080544442);
 //    BOOST_CHECK_EQUAL(overlapInfo.a1, 15);
