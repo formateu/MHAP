@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -Wall -Wextra --coverage")
 
 #Boost
-find_package(Boost COMPONENTS unit_test_framework REQUIRED)
+find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
 add_library(mhap_cpp_lib
         src/MurmurHash3.cpp
@@ -17,6 +17,7 @@ add_library(mhap_cpp_lib
         src/SequenceSketchStreamer.cpp
         src/MinHashSearch.cpp
         src/SequenceSketch.cpp
+        src/MatchResult.cpp
         )
 
 add_executable(mhap_cpp
@@ -44,6 +45,7 @@ target_link_libraries(test_mhap_cpp
 
 target_link_libraries(mhap_cpp
         mhap_cpp_lib
+        ${Boost_LIBRARIES}
         )
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/tests/t1.fa ${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
