@@ -8,6 +8,6 @@ SequenceSketch::SequenceSketch(const Sequence &seq,
                                double repeatWeight)
     : sequenceSize_(seq.size())
       , id_(seq.id)
-      , mainHashes(seq.read, kmerSize, numHashes, false, repeatWeight)
-      , orderedHashes_(seq.read, orderedKmerSize, orderedSketchSize, false, repeatWeight) {}
+      , mainHashes_(seq.read, kmerSize, numHashes, false, repeatWeight)
+      , orderedHashes_(seq.read, orderedKmerSize, orderedSketchSize, false) {}
 

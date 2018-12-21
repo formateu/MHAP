@@ -11,7 +11,6 @@ using IstreamPtr = std::unique_ptr<std::istream>;
 
 class SequenceStreamer {
 public:
-    //SequenceStreamer();
     SequenceStreamer(const std::string &filePath);
     SequenceStreamer(const SequenceStreamer &oth) = delete;
     SequenceStreamer(SequenceStreamer &&oth) = delete;

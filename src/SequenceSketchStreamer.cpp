@@ -19,13 +19,12 @@ SequenceSketchStreamer::SequenceSketchStreamer(const std::string &filePath,
 }
 
 SequenceSketchPtr SequenceSketchStreamer::dequeue(bool fwdOnly) {
-    //TODO ensure that it is safe in case of empty queue
     enqueueUntilFound(fwdOnly);
 
     auto head = SequenceSketchPtr{};
 
     if (!sequenceHashDeque_.empty()) {
-        auto head = std::move(sequenceHashDeque_.front());
+        head = std::move(sequenceHashDeque_.front());
         sequenceHashDeque_.pop_front();
     }
 
@@ -37,6 +36,7 @@ void SequenceSketchStreamer::enqueueFull(bool fwdOnly) {
 }
 
 SequenceSketchPtr SequenceSketchStreamer::getSketch(const Sequence &seq) {
+    // TODO: maybe Sequence as rvalue-reference?
     return std::make_unique<SequenceSketch>(seq,
                           kmerSize_,
                           numHashes_,
@@ -72,6 +72,8 @@ bool SequenceSketchStreamer::enqueue(bool fwdOnly) {
     return true;
 }
 
+// TODO: is this function even necessary now?
+// It represents same behaviour as enqueue
 bool SequenceSketchStreamer::enqueueUntilFound(bool fwdOnly) {
     bool getNext = true;
     bool returnValue = false;

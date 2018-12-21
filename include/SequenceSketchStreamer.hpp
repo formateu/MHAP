@@ -23,7 +23,6 @@ public:
 protected:
     bool enqueue(bool fwdOnly);
     bool enqueueUntilFound(bool fwdOnly);
-private:
     std::deque<SequenceSketchPtr> sequenceHashDeque_;
     SequenceStreamer fastaData_;
     size_t minOlapLength_;

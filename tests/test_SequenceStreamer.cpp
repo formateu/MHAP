@@ -66,6 +66,22 @@ BOOST_AUTO_TEST_CASE(TestDequeue) {
     BOOST_CHECK_EQUAL(seq2->id.isFwd, true);
 
     BOOST_CHECK_EQUAL(s.getReadAll(), true);
+
+    BOOST_REQUIRE_NO_THROW(s.dequeue());
+    auto seqEmpty = s.dequeue();
+
+    BOOST_CHECK(!seqEmpty);
+}
+
+BOOST_AUTO_TEST_CASE(TestEmpty) {
+    SequenceStreamerWrapper s("t1.fa");
+    BOOST_CHECK_EQUAL(s.empty(), false);
+    s.enqueueAll();
+    BOOST_CHECK_EQUAL(s.empty(), false);
+    s.dequeue();
+    BOOST_CHECK_EQUAL(s.empty(), false);
+    s.dequeue();
+    BOOST_CHECK_EQUAL(s.empty(), true);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

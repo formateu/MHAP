@@ -56,14 +56,14 @@ bool MinHashSearch::addSequence(SequenceSketchPtr &&currHash) {
 std::list<MatchResult> MinHashSearch::findMatches() {
     //TODO: parallelize
     auto seqDeque{getStoredForwardSeqIds()};
-    auto nextSequence = std::move(seqDeque.back());
+    auto nextSequence = seqDeque.back();
     seqDeque.pop_back();
     std::list<MatchResult> matches;
 
     while (!seqDeque.empty()) {
         const auto &sequenceHashes = sequenceVectorHash_.find(nextSequence)->second;
         matches.splice(matches.end(), findMatches(sequenceHashes, true));
-        auto nextSequence = std::move(seqDeque.back());
+        auto nextSequence = seqDeque.back();
         seqDeque.pop_back();
     }
 
@@ -73,7 +73,7 @@ std::list<MatchResult> MinHashSearch::findMatches() {
 
 std::list<MatchResult> MinHashSearch::findMatches(const SequenceSketch &seqHashes, bool toSelf) {
     const auto &minHash = seqHashes.getMinHashes();
-    std::unordered_map<SequenceId, HitCounter> bestSequenceHit;
+    std::unordered_map<SequenceId, HitCounter, SequenceIdHasher> bestSequenceHit;
 }
 
 std::deque<SequenceId> MinHashSearch::getStoredForwardSeqIds() {
