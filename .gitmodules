@@ -1,0 +1,3 @@
+[submodule "GM3cpp"]
+	path = GM3cpp
+	url = git@github.com:formateu/GM3cpp.git
