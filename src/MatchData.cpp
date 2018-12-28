@@ -66,17 +66,20 @@ EdgeDataPtr MatchData::computeEdges() {
     // get edge info uniformly minimum variance unbiased (UMVU) estimators
     // a = (n*a-b)/(n-1)
     // b = (n*b-a)/(n-1)
-    auto n_1 = static_cast<double>(validCount - 1);
-    double na1_b1 = std::round(validCount * leftEdge1 - rightEdge1);
-    double nb1_a1 = std::round(validCount * rightEdge1 - leftEdge1);
-    double na2_b2 = std::round(validCount * leftEdge2 - rightEdge2);
-    double nb2_a2 = std::round(validCount * rightEdge2 - leftEdge2);
+    auto n = static_cast<double>(validCount);
+    auto n_1 = n - 1;
 
-    int32_t a1 = std::max(0, static_cast<int32_t>(na1_b1 / n_1));
-    int32_t a2 = std::min(seqSize1_, static_cast<int32_t>(nb1_a1 / n_1));
+    double na1_b1 = n * leftEdge1 - rightEdge1;
+    double nb1_a1 = n * rightEdge1 - leftEdge1;
+    double na2_b2 = n * leftEdge2 - rightEdge2;
+    double nb2_a2 = n * rightEdge2 - leftEdge2;
 
-    int32_t b1 = std::max(0, static_cast<int32_t>(na2_b2 / n_1));
-    int32_t b2 = std::min(seqSize2_, static_cast<int32_t>(nb2_a2 / n_1));
+    int32_t a1 = std::max(0, static_cast<int32_t>(std::round(na1_b1 / n_1)));
+    int32_t a2 = std::min(seqSize1_, static_cast<int32_t>(std::round(nb1_a1 / n_1)));
+
+    int32_t b1 = std::max(0, static_cast<int32_t>(std::round(na2_b2 / n_1)));
+    int32_t b2 = std::min(seqSize2_, static_cast<int32_t>(std::round(nb2_a2 / n_1)));
+
 
     return std::make_unique<EdgeData>(a1, a2, b1, b2, validCount);
 }
@@ -143,7 +146,7 @@ void MatchData::performUpdate() {
             int32_t overlapSize = std::max(10, rightPosition - leftPosition);
 
             absMaxShiftInOverlap_ = std::min(std::max(seqSize1_, seqSize2_),
-                                             static_cast<int32_t>(overlapSize * maxShiftPercent_));
+                                             static_cast<int32_t>((double)overlapSize * maxShiftPercent_));
         } else {
             medianShift_ = 0;
             absMaxShiftInOverlap_ = std::max(seqSize1_, seqSize2_) + 1;

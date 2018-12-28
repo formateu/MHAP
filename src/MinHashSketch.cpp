@@ -30,7 +30,8 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
     /**
      * Find all unique kmers with their frequencies
      */
-    for (const auto &kmer : kmerHashes) {
+     // faster to copy 32bit int
+    for (const auto kmer : kmerHashes) {
         //TODO: maybe implement kmerFilter later
         if (hitMap.find(kmer) == hitMap.end()) {
             hitMap.emplace(kmer, 1U);
@@ -39,7 +40,7 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
         }
     }
 
-    std::vector<int32_t> hashes(std::max(1UL, numHashes), 0U);
+    std::vector<int32_t> hashes(std::max(1UL, numHashes), 0);
     std::vector<int64_t> best(numHashes, std::numeric_limits<int64_t>::max());
 
     //size_t numberValid = 0;
@@ -59,9 +60,9 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
 
         //is this even occurs?
         //FIXME: this does not occur (always one or more)
-//        if (weight == 0U) {
-//            continue;
-//        }
+        if (weight <= 0) {
+            continue;
+        }
 
         int64_t x = key;
 
@@ -73,7 +74,7 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
                 // probably from here ^^
                 x ^= (x << 21);
                 //unsigned shift from Java equivalent
-                x ^= (x >> 35);
+                x ^= (int64_t)((uint64_t)x >> 35);
                 x ^= (x << 4);
 
                 if (x < best[word]) {
@@ -82,7 +83,7 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
                     if (word % 2 == 0) {
                         hashes[word] = static_cast<int32_t>(key);
                     } else {
-                        hashes[word] = static_cast<int32_t>(key >> 32);
+                        hashes[word] = static_cast<int32_t>((int64_t)((uint64_t)key >> 32));
                         //unsigned shift no effect on unsigned value
                     }
                 }

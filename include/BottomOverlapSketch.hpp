@@ -51,7 +51,7 @@ public:
      * Accessor for number of hash, pos pairs in sketch.
      * @return number of hash, pos pairs in sketch.
      */
-    std::size_t size() const { return orderedHashes_.size(); }
+    int32_t size() const { return static_cast<int32_t>(orderedHashes_.size()); }
 
     /**
      * Converts Jaccard similarity to ?
@@ -81,7 +81,7 @@ protected:
         /**
          * Default initialization of structure.
          */
-        HashPosPair() : hash(0U), pos(0) {}
+        HashPosPair() : hash(0), pos(0) {}
     };
 
     using KmerHashes = std::vector<HashPosPair>;

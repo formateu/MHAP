@@ -74,7 +74,7 @@ double BottomOverlapSketch::computeKBottomSketchJaccard(const KmerHashes &seq1Ha
     int32_t k = std::min(s1, s2);
 
     if (k == 0) {
-        return k;
+        return 0;
     }
 
     int32_t i = 0;

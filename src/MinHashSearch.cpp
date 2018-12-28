@@ -28,7 +28,7 @@ void MinHashSearch::addData(SequenceSketchStreamer &seqStreamer, bool doReverseC
 
     while (seqHashes) {
         addSequence(std::move(seqHashes));
-        seqHashes = seqStreamer.dequeue(!doReverseCompliment);
+        seqHashes = seqStreamer.dequeue(false);
     }
 }
 
@@ -36,8 +36,8 @@ bool MinHashSearch::addSequence(SequenceSketchPtr &&currHash) {
     auto it = sequenceVectorHash_.emplace(currHash->getSequenceId(), std::move(*currHash)).first;
 
     size_t count = 0;
-    auto id = it->second.getSequenceId();
-    auto currMinHashes = it->second.getMinHashes().getMinHashArray();
+    const auto id = it->second.getSequenceId();
+    const auto &currMinHashes = it->second.getMinHashes().getMinHashArray();
 
     for (auto &hash : hashes_) {
         int32_t hashVal = currMinHashes[count];
@@ -56,15 +56,15 @@ bool MinHashSearch::addSequence(SequenceSketchPtr &&currHash) {
 std::list<MatchResult> MinHashSearch::findMatches() {
     //TODO: parallelize
     auto seqDeque{getStoredForwardSeqIds()};
-    auto nextSequence = seqDeque.back();
-    seqDeque.pop_back();
+    auto nextSequence = seqDeque.front();
+    seqDeque.pop_front();
     std::list<MatchResult> matches;
 
     while (!seqDeque.empty()) {
         const auto &sequenceHashes = sequenceVectorHash_.find(nextSequence)->second;
         matches.splice(matches.end(), findMatches(sequenceHashes, true));
-        nextSequence = seqDeque.back();
-        seqDeque.pop_back();
+        nextSequence = seqDeque.front();
+        seqDeque.pop_front();
     }
 
     const auto &sequenceHashes = sequenceVectorHash_.find(nextSequence)->second;

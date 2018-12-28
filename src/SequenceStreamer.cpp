@@ -2,7 +2,7 @@
 #include <IOError.hpp>
 
 SequenceStreamer::SequenceStreamer(const std::string &filePath)
-    : seqStream_(std::make_unique<std::ifstream>(filePath)), readAll_(false), index_(0U) {
+    : seqStream_(std::make_unique<std::ifstream>(filePath)), readAll_(false), index_(1U) {
     if (!seqStream_->good()) {
         throw IOError("IO Error during reading from input file.");
     }

@@ -41,7 +41,6 @@ std::vector<int64_t> HashUtils::computeSeqHashesLong(const std::string &seq,
             }
         }
 
-
 //        MurmurHash3_x64_128(kmer.data(), kmer.size(), seed, tempHashOut.data());
 //        hashes[iter] = tempHashOut[1];
         hasher.putUnencodedChars(kmer);
