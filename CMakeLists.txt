@@ -21,7 +21,7 @@ add_library(MHAP SHARED
         )
 
 target_include_directories(MHAP PRIVATE include)
-target_include_directories(MHAP PRIVATE GM3cpp/include)
+target_include_directories(MHAP PRIVATE GM3cpp)
 
 add_subdirectory("GM3cpp")
 
@@ -33,6 +33,7 @@ target_include_directories(mhap PRIVATE include)
 
 
 add_executable(test
+        EXCLUDE_FROM_ALL
         tests/test_main.cpp
         tests/test_SequenceId.cpp
         tests/test_Sequence.cpp

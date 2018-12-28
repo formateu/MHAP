@@ -5,8 +5,8 @@
 #include <Sequence.hpp>
 //#include <MurmurHash3.h>
 
-#include <Murmur3_32.hpp>
-#include <Murmur3_128.hpp>
+#include <GM3cpp/Murmur3_32.hpp>
+#include <GM3cpp/Murmur3_128.hpp>
 
 //TODO: avoid copypaste in these 2 functions
 
@@ -21,7 +21,8 @@ std::vector<int64_t> HashUtils::computeSeqHashesLong(const std::string &seq,
 
     std::string_view seqView(seq);
 //    std::array<uint64_t, 2> tempHashOut{0UL, 0UL};
-    Murmur3_128 hasher(seed);
+    // TODO: fix allocation problem here
+    GM3cpp::Murmur3_128 hasher(seed);
     /**
      * For each kmer in sequence
      * check if it is lexicography smaller than its reverse compliment
@@ -62,7 +63,7 @@ std::vector<int32_t> HashUtils::computeSeqHashes(const std::string &seq,
 
     std::string_view seqView(seq);
 //    uint32_t tempHashOut{0};
-    Murmur3_32 hasher;
+    GM3cpp::Murmur3_32 hasher;
     /**
      * For each kmer in sequence
      * check if it is lexicography smaller than its reverse compliment
