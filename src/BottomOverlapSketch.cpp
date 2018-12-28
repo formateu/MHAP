@@ -107,8 +107,8 @@ double BottomOverlapSketch::jaccardToIdentity(double score, size_t kmerSize) con
 
 void BottomOverlapSketch::recordMatchingKmers(MatchData &matchData,
                                               const KmerHashes &seqKmerHashes) const {
-    uint32_t hash1;
-    uint32_t hash2;
+    int32_t hash1;
+    int32_t hash2;
     int32_t pos1;
     int32_t pos2;
 
@@ -165,7 +165,7 @@ void BottomOverlapSketch::recordMatchingKmers(MatchData &matchData,
                 size_t i1Try = i1 + 1;
 
                 if (i1Try < orderedHashes_.size()) {
-                    uint32_t hash1Try = orderedHashes_[i1Try].hash;
+                    int32_t hash1Try = orderedHashes_[i1Try].hash;
                     int32_t pos1Try = orderedHashes_[i1Try].pos;
 
                     while (hash1Try == hash1 && pos1Try >= valid1Lower && pos1Try < valid1Upper) {
@@ -186,7 +186,7 @@ void BottomOverlapSketch::recordMatchingKmers(MatchData &matchData,
                 size_t i2Try = i2 + 1;
 
                 if (i2Try < seqKmerHashes.size()) {
-                    uint32_t hash2Try = seqKmerHashes[i2Try].hash;
+                    int32_t hash2Try = seqKmerHashes[i2Try].hash;
                     int32_t pos2Try = seqKmerHashes[i2Try].pos;
 
                     while (hash2Try == hash2 && pos2Try >= valid2Lower && pos2Try < valid2Upper) {

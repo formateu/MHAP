@@ -40,7 +40,7 @@ bool MinHashSearch::addSequence(SequenceSketchPtr &&currHash) {
     auto currMinHashes = it->second.getMinHashes().getMinHashArray();
 
     for (auto &hash : hashes_) {
-        uint32_t hashVal = currMinHashes[count];
+        int32_t hashVal = currMinHashes[count];
 
         if (hash.find(hashVal) == hash.end()) {
             hash.emplace(hashVal, std::vector<SequenceId>());

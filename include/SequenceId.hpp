@@ -62,10 +62,10 @@ struct SequenceIdHasher {
      * @param toHash SequenceId object which will be hashed.
      * @return hash value represented by unsigned 32-bit number.
      */
-    uint32_t operator()(const SequenceId &toHash) const {
-        auto id = static_cast<uint32_t>(toHash.id);
+    int32_t operator()(const SequenceId &toHash) const {
+        auto id = static_cast<int32_t>(toHash.id);
 
-        return toHash.isFwd ? std::numeric_limits<uint32_t>::max() - id : id;
+        return toHash.isFwd ? id : -id;
     }
 };
 

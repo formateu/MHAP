@@ -17,7 +17,7 @@ MinHashSketch::MinHashSketch(const std::string &seq,
                                                repeatWeight)) {}
 
 //protected
-std::vector<uint32_t>
+std::vector<int32_t>
 MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
                                              size_t nGramSize,
                                              size_t numHashes,
@@ -25,7 +25,7 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
                                              double repeatWeight) {
     auto kmerHashes{HashUtils::computeSeqHashesLong(seq, nGramSize, 0U, doReverseCompliment)};
 
-    std::unordered_map<uint64_t, HitCounter> hitMap;
+    std::unordered_map<int64_t, HitCounter> hitMap;
 
     /**
      * Find all unique kmers with their frequencies
@@ -39,8 +39,8 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
         }
     }
 
-    std::vector<uint32_t> hashes(std::max(1UL, numHashes), 0U);
-    std::vector<uint64_t> best(numHashes, std::numeric_limits<uint64_t>::max());
+    std::vector<int32_t> hashes(std::max(1UL, numHashes), 0U);
+    std::vector<int64_t> best(numHashes, std::numeric_limits<int64_t>::max());
 
     //size_t numberValid = 0;
 
@@ -50,8 +50,8 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
      */
     for (const auto &mapEntry : hitMap) {
 
-        uint64_t key = mapEntry.first;
-        uint32_t weight = mapEntry.second.count;
+        int64_t key = mapEntry.first;
+        int32_t weight = mapEntry.second.count;
 
         if (repeatWeight < 0.0f) {
             weight = 1.0f;
@@ -63,11 +63,11 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
 //            continue;
 //        }
 
-        uint64_t x = key;
+        int64_t x = key;
 
         for (size_t word = 0U; word < numHashes; ++word) {
             //dunno which type is best here actually
-            for (uint32_t count = 0; count < weight; ++count) {
+            for (int32_t count = 0; count < weight; ++count) {
                 // XORShift Random Number Generators
                 // https://www.javamex.com/tutorials/random_numbers/xorshift.shtml
                 // probably from here ^^

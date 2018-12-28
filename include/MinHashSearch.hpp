@@ -72,7 +72,7 @@ protected:
      */
     void addData(SequenceSketchStreamer &seqStreamer, bool doReverseCompliment);
 private:
-    std::vector<std::unordered_map<uint32_t, std::vector<SequenceId>>> hashes_; /**< TODO: fill */
+    std::vector<std::unordered_map<int32_t, std::vector<SequenceId>>> hashes_; /**< TODO: fill */
     std::unordered_map<SequenceId, SequenceSketch, SequenceIdHasher>
         sequenceVectorHash_; /**< map: Id -> Sketch. */
 //    size_t numHashes_; /**< number of hashes in MinHash sketch. */

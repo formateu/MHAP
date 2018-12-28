@@ -45,9 +45,10 @@ public:
      * Accessor to internal minhash array (read-only).
      * @return
      */
-    const std::vector<uint32_t> &getMinHashArray() const { return minHashes_; }
+    const std::vector<int32_t> &getMinHashArray() const { return minHashes_; }
+
 protected:
-    std::vector<uint32_t> minHashes_; /**< internal MinHash array. */
+    std::vector<int32_t> minHashes_; /**< internal MinHash array. */
 
     /**
      * Creates raw MinHash sketch from sequence string based on given parameters..
@@ -58,11 +59,11 @@ protected:
      * @param repeatWeight TODO: fill.
      * @return vector of hashes encoded on unsigned 32-bit integers.
      */
-    std::vector<uint32_t> computeNgramMinHashesWeighted(const std::string &seq,
-                                                        size_t nGramSize,
-                                                        size_t numHashes,
-                                                        bool doReverseCompliment,
-                                                        double repeatWeight);
+    std::vector<int32_t> computeNgramMinHashesWeighted(const std::string &seq,
+                                                       size_t nGramSize,
+                                                       size_t numHashes,
+                                                       bool doReverseCompliment,
+                                                       double repeatWeight);
 };
 
 #endif //MinHashSketch_HPP

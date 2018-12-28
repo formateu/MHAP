@@ -75,7 +75,7 @@ protected:
      * Created to improve readability (better than std::pair, std::tuple first, second, etc.)
      */
     struct HashPosPair {
-        uint32_t hash; /**< k-mer hash value  */
+        int32_t hash; /**< k-mer hash value  */
         int32_t pos; /**< k-mer position in original sequence */
 
         /**

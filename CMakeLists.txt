@@ -7,8 +7,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb -Wall -Wextra --coverage")
 #Boost
 find_package(Boost COMPONENTS unit_test_framework program_options REQUIRED)
 
-add_library(mhap_cpp_lib
-        src/MurmurHash3.cpp
+add_library(MHAP SHARED
+#        src/MurmurHash3.cpp
         src/SequenceStreamer.cpp
         src/HashUtils.cpp
         src/MinHashSketch.cpp
@@ -20,16 +20,19 @@ add_library(mhap_cpp_lib
         src/MatchResult.cpp
         )
 
-target_include_directories(mhap_cpp_lib PRIVATE include)
+target_include_directories(MHAP PRIVATE include)
+target_include_directories(MHAP PRIVATE GM3cpp/include)
 
-add_executable(mhap_cpp
+add_subdirectory("GM3cpp")
+
+add_executable(mhap
         src/main.cpp
         )
 
-target_include_directories(mhap_cpp PRIVATE include)
+target_include_directories(mhap PRIVATE include)
 
 
-add_executable(test_mhap_cpp
+add_executable(test
         tests/test_main.cpp
         tests/test_SequenceId.cpp
         tests/test_Sequence.cpp
@@ -43,15 +46,19 @@ add_executable(test_mhap_cpp
         tests/test_SequenceSketchStreamer.cpp
         )
 
-target_include_directories(test_mhap_cpp PRIVATE include)
+target_include_directories(test PRIVATE include)
 
-target_link_libraries(test_mhap_cpp
-        ${BOOST_UNIT_TEST_FRAMEWORK_LIBRARY}
-        mhap_cpp_lib
+target_link_libraries(MHAP
+        GM3cpp
         )
 
-target_link_libraries(mhap_cpp
-        mhap_cpp_lib
+target_link_libraries(test
+        ${BOOST_UNIT_TEST_FRAMEWORK_LIBRARY}
+        MHAP
+        )
+
+target_link_libraries(mhap
+        MHAP
         ${Boost_LIBRARIES}
         )
 
