@@ -18,12 +18,14 @@ struct Sequence {
     const std::string read; /**< raw sequence data. */
     const SequenceId id; /**< ordinal number in input stream. */
 
+    // Pass by value and use std::move
+    // https://clang.llvm.org/extra/clang-tidy/checks/modernize-pass-by-value.html
     /**
      * Creates Sequence object by copying given parameters.
      * @param seq raw sequence data.
      * @param id_ ordinal number in input stream.
      */
-    Sequence(const std::string &seq, const SequenceId &id_) : read(seq), id(id_) {}
+    Sequence(std::string seq, const SequenceId &id_) : read(std::move(seq)), id(id_) {}
 
     /**
      * Creates Sequence object by moving given parameters.
@@ -56,6 +58,9 @@ struct Sequence {
                     break;
                 case 'T':
                     base = 'A';
+                    break;
+                default:
+                    base = '-';
                     break;
             }
         }

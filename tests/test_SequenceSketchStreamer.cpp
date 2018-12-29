@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_CASE(TestDequeue) {
 
 BOOST_AUTO_TEST_CASE(TestGetSketch) {
     SequenceSketchStreamerWrapper seq("t1.fa");
-    Sequence sequence("ACTG", 0UL);
+    Sequence sequence("ACTG", SequenceId(0UL));
 
     auto sketchPtr = seq.getSketch(sequence);
 

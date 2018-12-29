@@ -22,7 +22,16 @@ using IstreamPtr = std::unique_ptr<std::istream>;
 class SequenceStreamer {
 public:
     /**
+     * Creates SequenceStreamer basing on input file path,
+     * Sequences are enumerated starting from startIndex
+     * @param filePath path to input file containing sequences.
+     * @param startIndex first sequence in file index
+     */
+    explicit SequenceStreamer(const std::string &filePath, size_t startIndex);
+
+    /**
      * Creates SequenceStreamer basing on input file path.
+     * Sequences are enumerated starting from 0.
      * @param filePath path to input file containing sequences.
      */
     explicit SequenceStreamer(const std::string &filePath);

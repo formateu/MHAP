@@ -9,12 +9,12 @@
 MatchData::MatchData(const BottomOverlapSketch &o1,
                      const BottomOverlapSketch &o2,
                      double maxShiftPercent)
-    : maxShiftPercent_(maxShiftPercent)
-      , posShift_(std::max(o1.size(), o2.size()) / 4 + 1, 0)
-      , pos1Index_(posShift_.size(), 0)
-      , pos2Index_(posShift_.size(), 0)
-      , seqSize1_(o1.sequenceSize())
-      , seqSize2_(o2.sequenceSize()) {
+    : maxShiftPercent_(maxShiftPercent),
+      posShift_(std::max(o1.size(), o2.size()) / 4 + 1, 0),
+      pos1Index_(posShift_.size(), 0),
+      pos2Index_(posShift_.size(), 0),
+      seqSize1_(static_cast<int32_t>(o1.sequenceSize())),
+      seqSize2_(static_cast<int32_t>(o2.sequenceSize())) {
     reset();
 }
 
@@ -79,7 +79,6 @@ EdgeDataPtr MatchData::computeEdges() {
 
     int32_t b1 = std::max(0, static_cast<int32_t>(std::round(na2_b2 / n_1)));
     int32_t b2 = std::min(seqSize2_, static_cast<int32_t>(std::round(nb2_a2 / n_1)));
-
 
     return std::make_unique<EdgeData>(a1, a2, b1, b2, validCount);
 }
@@ -146,7 +145,8 @@ void MatchData::performUpdate() {
             int32_t overlapSize = std::max(10, rightPosition - leftPosition);
 
             absMaxShiftInOverlap_ = std::min(std::max(seqSize1_, seqSize2_),
-                                             static_cast<int32_t>((double)overlapSize * maxShiftPercent_));
+                                             static_cast<int32_t>((double) overlapSize
+                                                 * maxShiftPercent_));
         } else {
             medianShift_ = 0;
             absMaxShiftInOverlap_ = std::max(seqSize1_, seqSize2_) + 1;

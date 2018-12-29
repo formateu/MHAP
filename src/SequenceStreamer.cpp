@@ -1,12 +1,14 @@
 #include <SequenceStreamer.hpp>
 #include <IOError.hpp>
 
-SequenceStreamer::SequenceStreamer(const std::string &filePath)
-    : seqStream_(std::make_unique<std::ifstream>(filePath)), readAll_(false), index_(1U) {
+SequenceStreamer::SequenceStreamer(const std::string &filePath, size_t startIndex)
+    : seqStream_(std::make_unique<std::ifstream>(filePath)), readAll_(false), index_(startIndex) {
     if (!seqStream_->good()) {
         throw IOError("IO Error during reading from input file.");
     }
 }
+
+SequenceStreamer::SequenceStreamer(const std::string &filePath) : SequenceStreamer(filePath, 0UL) {}
 
 bool SequenceStreamer::enqueueNextSequence() {
     std::string lastLine, read;

@@ -1,6 +1,6 @@
 /**
  * @file EdgeData.hpp
- * @brief t
+ * @brief TODO: fill
  */
 #ifndef EdgeData_HPP
 #define EdgeData_HPP

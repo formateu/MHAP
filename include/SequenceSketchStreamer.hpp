@@ -21,6 +21,29 @@ public:
     /**
      * Creates SequenceSketchStreamer object with given parameters.
      * @param filePath path to input sequence file.
+     * @param startId Ordinal number of first sequence in file (sequence Id).
+     * @param minOlapLength minimum length of the overlap between sequences.
+     * @param kmerSize size of the k-mer in minhash sketch.
+     * @param numHashes number of minhash sketches for sequence representation.
+     * @param orderedKmerSize size of the k-mer in k-bottom sketch.
+     * @param orderedSketchSize number of hash, position pairs in k-bottom sketch.
+     * @param doReverseCompliment flag determining if reverse compliment sequences are processed.
+     * @param repeatWeight TODO: fill.
+     */
+    SequenceSketchStreamer(const std::string &filePath,
+                           size_t startId,
+                           size_t minOlapLength,
+                           size_t kmerSize,
+                           size_t numHashes,
+                           size_t orderedKmerSize,
+                           size_t orderedSketchSize,
+                           bool doReverseCompliment,
+                           double repeatWeight);
+
+    /**
+     * Creates SequenceSketchStreamer object with given parameters.
+     * First sequence id = 0.
+     * @param filePath path to input sequence file.
      * @param minOlapLength minimum length of the overlap between sequences.
      * @param kmerSize size of the k-mer in minhash sketch.
      * @param numHashes number of minhash sketches for sequence representation.
@@ -79,7 +102,8 @@ protected:
     size_t numHashes_; /**< number of minhash sketches for sequence representation. */
     size_t orderedKmerSize_; /**< size of the k-mer in k-bottom sketch.*/
     size_t orderedSketchSize_; /**< number of hash, position pairs in k-bottom sketch. */
-    bool doReverseCompliment_; /**< flag determining if reverse compliment sequences are processed.*/
+    bool
+        doReverseCompliment_; /**< flag determining if reverse compliment sequences are processed.*/
     double repeatWeight_; /**< TODO: fill.*/
 };
 

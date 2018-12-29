@@ -15,11 +15,7 @@ MatchResult::MatchResult(const SequenceId &fromId_,
 
     rawScore = overlap.rawScore;
 
-    if (overlap.score > 1.0) {
-        score = 1.0;
-    } else {
-        score = overlap.score;
-    }
+    score = std::min(1.0, overlap.score);
 }
 
 std::string MatchResult::toString() const {

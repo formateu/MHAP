@@ -102,8 +102,7 @@ std::list<MatchResult> MinHashSearch::findMatches(const SequenceSketch &seqHashe
     std::list<MatchResult> matches;
 
     for (const auto &match : bestSequenceHit) {
-        const auto &matchId = match.first;
-        const auto &matchValue = match.second;
+        const auto&[matchId, matchValue] = match;
 
         if (toSelf && matchId.id == seqHashes.getSequenceId().id) {
             continue;

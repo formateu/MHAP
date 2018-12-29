@@ -8,43 +8,26 @@
 #include <GM3cpp/Murmur3_32.hpp>
 #include <GM3cpp/Murmur3_128.hpp>
 
-//TODO: avoid copypaste in these 2 functions
 
-//static method
-std::vector<int64_t> HashUtils::computeSeqHashesLong(const std::string &seq,
-                                                     size_t nGramSize,
-                                                     int32_t seed,
-                                                     bool doReverseCompliment) {
 
-//    void MurmurHash3_x64_128 ( const void * key, int len, uint32_t seed, void * out );
-    std::vector<int64_t> hashes(seq.size() - nGramSize + 1);
-
+template<typename T, class Hasher>
+std::vector<T> computeSeqHashesGeneric(const std::string &seq,
+                                       size_t nGramSize,
+                                       int32_t seed,
+                                       bool doReverseCompliment) {
+    std::vector<T> hashes(seq.size() - nGramSize + 1);
     std::string_view seqView(seq);
-//    std::array<uint64_t, 2> tempHashOut{0UL, 0UL};
-    // TODO: fix allocation problem here
-    GM3cpp::Murmur3_128 hasher(seed);
+    Hasher hasher(seed);
     /**
      * For each kmer in sequence
      * check if it is lexicography smaller than its reverse compliment
      * and replace if it is
-     * hash kmer with Murmur3 x64_128
+     * hash kmer with Hasher object
      */
     for (size_t iter = 0; iter < hashes.size(); ++iter) {
         auto kmer = seqView.substr(iter, nGramSize);
-        std::string kmerRevCompl;
 
-        if (doReverseCompliment) {
-            kmerRevCompl = Sequence::revCompSeq(kmer);
-
-            if (kmerRevCompl.compare(kmer) < 0) {
-                kmer = kmerRevCompl;
-            }
-        }
-
-//        MurmurHash3_x64_128(kmer.data(), kmer.size(), seed, tempHashOut.data());
-//        hashes[iter] = tempHashOut[1];
-        hasher.putUnencodedChars(kmer);
-        hashes[iter] = hasher.hash();
+        hashes[iter] = HashUtils::hashKmer(kmer, hasher, doReverseCompliment);
 
         hasher.reset();
     }
@@ -53,41 +36,24 @@ std::vector<int64_t> HashUtils::computeSeqHashesLong(const std::string &seq,
 }
 
 //static method
+std::vector<int64_t> HashUtils::computeSeqHashesLong(const std::string &seq,
+                                                     size_t nGramSize,
+                                                     int32_t seed,
+                                                     bool doReverseCompliment) {
+
+    return computeSeqHashesGeneric<int64_t, GM3cpp::Murmur3_128>(seq,
+                                                                 nGramSize,
+                                                                 seed,
+                                                                 doReverseCompliment);
+}
+
+//static method
 std::vector<int32_t> HashUtils::computeSeqHashes(const std::string &seq,
                                                  size_t nGramSize,
     //no seed here - fixed on 0U
                                                  bool doReverseCompliment) {
-//    void MurmurHash3_x86_32  ( const void * key, int len, uint32_t seed, void * out );
-    std::vector<int32_t> hashes(seq.size() - nGramSize + 1);
-
-    std::string_view seqView(seq);
-//    uint32_t tempHashOut{0};
-    GM3cpp::Murmur3_32 hasher;
-    /**
-     * For each kmer in sequence
-     * check if it is lexicography smaller than its reverse compliment
-     * and replace if it is
-     * hash kmer with Murmur3 (x86_32)
-     */
-    for (size_t iter = 0; iter < hashes.size(); ++iter) {
-        auto kmer = seqView.substr(iter, nGramSize);
-        std::string kmerRevCompl;
-
-        if (doReverseCompliment) {
-            kmerRevCompl = Sequence::revCompSeq(kmer);
-
-            if (kmerRevCompl.compare(kmer) < 0) {
-                kmer = kmerRevCompl;
-            }
-        }
-
-//        MurmurHash3_x86_32(kmer.data(), kmer.size(), 0U, &tempHashOut);
-//        hashes[iter] = tempHashOut;
-        hasher.putUnencodedChars(kmer);
-        hashes[iter] = hasher.hash();
-
-        hasher.reset();
-    }
-
-    return hashes;
+    return computeSeqHashesGeneric<int32_t, GM3cpp::Murmur3_32>(seq,
+                                                                nGramSize,
+                                                                0,
+                                                                doReverseCompliment);
 }

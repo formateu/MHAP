@@ -1,6 +1,7 @@
 #include <SequenceSketchStreamer.hpp>
 
 SequenceSketchStreamer::SequenceSketchStreamer(const std::string &filePath,
+                                               size_t firstId,
                                                size_t minOlapLength,
                                                size_t kmerSize,
                                                size_t numHashes,
@@ -8,16 +9,34 @@ SequenceSketchStreamer::SequenceSketchStreamer(const std::string &filePath,
                                                size_t orderedSketchSize,
                                                bool doReverseCompliment,
                                                double repeatWeight)
-    : fastaData_(filePath)
-      , minOlapLength_(minOlapLength)
-      , kmerSize_(kmerSize)
-      , numHashes_(numHashes)
-      , orderedKmerSize_(orderedKmerSize)
-      , orderedSketchSize_(orderedSketchSize)
-      , doReverseCompliment_(doReverseCompliment)
-      , repeatWeight_(repeatWeight) {
+    : fastaData_(filePath, firstId),
+      minOlapLength_(minOlapLength),
+      kmerSize_(kmerSize),
+      numHashes_(numHashes),
+      orderedKmerSize_(orderedKmerSize),
+      orderedSketchSize_(orderedSketchSize),
+      doReverseCompliment_(doReverseCompliment),
+      repeatWeight_(repeatWeight) {
 
 }
+
+SequenceSketchStreamer::SequenceSketchStreamer(const std::string &filePath,
+                                               size_t minOlapLength,
+                                               size_t kmerSize,
+                                               size_t numHashes,
+                                               size_t orderedKmerSize,
+                                               size_t orderedSketchSize,
+                                               bool doReverseCompliment,
+                                               double repeatWeight)
+    : SequenceSketchStreamer(filePath,
+                             0UL,
+                             minOlapLength,
+                             kmerSize,
+                             numHashes,
+                             orderedKmerSize,
+                             orderedSketchSize,
+                             doReverseCompliment,
+                             repeatWeight) {}
 
 SequenceSketchPtr SequenceSketchStreamer::dequeue(bool fwdOnly) {
     enqueueUntilFound(fwdOnly);
@@ -39,12 +58,12 @@ void SequenceSketchStreamer::enqueueFull(bool fwdOnly) {
 SequenceSketchPtr SequenceSketchStreamer::getSketch(const Sequence &seq) {
     // TODO: maybe Sequence as rvalue-reference?
     return std::make_unique<SequenceSketch>(seq,
-                          kmerSize_,
-                          numHashes_,
-                          orderedKmerSize_,
-                          orderedSketchSize_,
+                                            kmerSize_,
+                                            numHashes_,
+                                            orderedKmerSize_,
+                                            orderedSketchSize_,
 //                          doReverseCompliment_,
-                          repeatWeight_);
+                                            repeatWeight_);
 }
 
 bool SequenceSketchStreamer::enqueue(bool fwdOnly) {

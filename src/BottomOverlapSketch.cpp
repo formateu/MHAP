@@ -7,69 +7,71 @@
 #include <numeric>
 #include <cmath>
 
+#include <GM3cpp/Murmur3_32.hpp>
+
+BottomOverlapSketch::KmerHashes
+BottomOverlapSketch::initializeSketch(const std::string &seq,
+                                      size_t kmerSize,
+                                      size_t sketchSize,
+                                      bool doReverseCompliment) {
+    KmerHashes kBottomSketch{seq.size() - kmerSize + 1};
+    std::string_view seqView{seq};
+    GM3cpp::Murmur3_32 hasher(0U);
+
+    for (size_t i = 0UL; i < kBottomSketch.size(); ++i) {
+        auto kmer = seqView.substr(i, kmerSize);
+        kBottomSketch[i].hash = HashUtils::hashKmer(kmer, hasher, doReverseCompliment);
+        kBottomSketch[i].pos = static_cast<int32_t>(i);
+        hasher.reset();
+    }
+
+    std::stable_sort(kBottomSketch.begin(), kBottomSketch.end(), [](auto lhs, auto rhs) {
+        return lhs.hash < rhs.hash;
+    });
+
+    auto k = std::min(sketchSize, kBottomSketch.size());
+    kBottomSketch.resize(k);
+
+    return kBottomSketch;
+}
+
 BottomOverlapSketch::BottomOverlapSketch(const std::string &seq,
                                          size_t kmerSize,
                                          size_t sketchSize,
                                          bool doReverseCompliment)
-    : kmerSize_(kmerSize)
-      , seqLength_(seq.size() - kmerSize + 1) {
-    auto hashes{HashUtils::computeSeqHashes(seq, kmerSize, doReverseCompliment)};
+    : kmerSize_(kmerSize),
+      seqLength_(seq.size() - kmerSize + 1),
+      orderedHashes_(BottomOverlapSketch::initializeSketch(seq,
+                                                           kmerSize,
+                                                           sketchSize,
+                                                           doReverseCompliment)) {}
 
-    std::vector<int32_t> perm(hashes.size());
-    std::iota(perm.begin(), perm.end(), 0);
-
-    //copy uint32_t
-    std::stable_sort(perm.begin(), perm.end(), [&hashes](auto lhs, auto rhs) {
-        return hashes[lhs] < hashes[rhs];
-    });
-
-    size_t k = std::min(sketchSize, hashes.size());
-
-    orderedHashes_.resize(k);
-
-    for (size_t i = 0U; i < orderedHashes_.size(); ++i) {
-        int32_t index = perm[i];
-        orderedHashes_[i].hash = hashes[index];
-        orderedHashes_[i].pos = index;
-    }
-}
-
-//static
+// static
 double BottomOverlapSketch::computeKBottomSketchJaccard(const KmerHashes &seq1Hashes,
                                                         const KmerHashes &seq2Hashes,
-//        int32_t medianShift,
-//        int32_t absMaxShiftInOverlap
                                                         int32_t a1,
                                                         int32_t a2,
                                                         int32_t b1,
                                                         int32_t b2) {
 
-    int32_t s1 = 0;
-    //TODO: rethink how to not copy struct here (not necessary at all)
-    //maybe pointers, but dirty when using smart ptrs
+    auto fillHashPosArrays = [](const auto &seqHashes, auto &array, auto low, auto high) {
+        int32_t s = 0;
+        for (const auto[hash, pos] : seqHashes) {
+            if (pos >= low && pos <= high) {
+                array[s].hash = hash;
+                array[s].pos = pos;
+                ++s;
+            }
+        }
+
+        return s;
+    };
+
     KmerHashes array1{seq1Hashes.size()};
-
-    //get k for first sequence
-    for (size_t i = 0; i < seq1Hashes.size(); ++i) {
-        int32_t pos = seq1Hashes[i].pos;
-
-        if (pos >= a1 && pos <= a2) {
-            array1[s1] = seq1Hashes[i];
-            ++s1;
-        }
-    }
-
-    int32_t s2 = 0;
-    //get k for second sequence
     KmerHashes array2{seq2Hashes.size()};
-    for (size_t j = 0; j < seq2Hashes.size(); ++j) {
-        int32_t pos = seq2Hashes[j].pos;
 
-        if (pos >= b1 && pos <= b2) {
-            array2[s2] = seq2Hashes[j];
-            ++s2;
-        }
-    }
+    int32_t s1 = fillHashPosArrays(seq1Hashes, array1, a1, a2);
+    int32_t s2 = fillHashPosArrays(seq2Hashes, array2, b1, b2);
 
     int32_t k = std::min(s1, s2);
 
@@ -105,39 +107,53 @@ double BottomOverlapSketch::jaccardToIdentity(double score, size_t kmerSize) con
     return std::exp(-d);
 }
 
+size_t BottomOverlapSketch::extend(const KmerHashes &seqHashes,
+                                   size_t i,
+                                   int32_t validLower,
+                                   int32_t validUpper,
+                                   int32_t hash) {
+    auto iLast = i;
+    auto iTry = i + 1;
+
+    if (iTry < seqHashes.size()) {
+        auto[hashTry, posTry] = seqHashes[iTry];
+
+        while (hashTry == hash && posTry >= validLower && posTry < validUpper) {
+            iLast = iTry;
+            ++iTry;
+
+            if (iTry >= seqHashes.size()) {
+                break;
+            }
+
+            hashTry = seqHashes[iTry].hash;
+            posTry = seqHashes[iTry].pos;
+        }
+    }
+
+    return iLast;
+}
+
 void BottomOverlapSketch::recordMatchingKmers(MatchData &matchData,
                                               const KmerHashes &seqKmerHashes) const {
+
+    int32_t medianShift = matchData.getMedianShift();
+    int32_t absMaxShift = matchData.getAbsMaxShift();
+    int32_t valid1Lower = matchData.valid1Lower();
+    int32_t valid2Lower = matchData.valid2Lower();
+    int32_t valid1Upper = matchData.valid1Upper();
+    int32_t valid2Upper = matchData.valid2Upper();
+
+    matchData.reset();
+
     int32_t hash1;
     int32_t hash2;
     int32_t pos1;
     int32_t pos2;
 
-    int32_t medianShift = matchData.getMedianShift();
-    int32_t absMaxShift = matchData.getAbsMaxShift();
-
-    int32_t valid1Lower = matchData.valid1Lower();
-    int32_t valid2Lower = matchData.valid2Lower();
-
-    int32_t valid1Upper = matchData.valid1Upper();
-    int32_t valid2Upper = matchData.valid2Upper();
-
-    size_t i1 = 0;
-    size_t i2 = 0;
-
-    matchData.reset();
-
-    while (true) {
-        if (i1 >= orderedHashes_.size()) {
-            break;
-        }
-
-        if (i2 >= seqKmerHashes.size()) {
-            break;
-        }
-
+    for (size_t i1 = 0, i2 = 0; i1 < orderedHashes_.size() && i2 < seqKmerHashes.size();) {
         hash1 = orderedHashes_[i1].hash;
         pos1 = orderedHashes_[i1].pos;
-
         hash2 = seqKmerHashes[i2].hash;
         pos2 = seqKmerHashes[i2].pos;
 
@@ -155,54 +171,17 @@ void BottomOverlapSketch::recordMatchingKmers(MatchData &matchData,
             } else if (diffFromExpected < -absMaxShift) {
                 ++i2;
             } else {
-                //record match
+                // record match
                 matchData.recordMatch(pos1, pos2, currShift);
 
-                //we need to create symmetry for reverse compliment, so we will look at first and last matches
+                // we need to create symmetry for reverse compliment,
+                // so we will look at first and last matches
 
-                //move the index to last point of same hash
-                size_t i1Last = i1;
-                size_t i1Try = i1 + 1;
+                // move the indices to last points of same hashes
+                size_t i1Last = extend(orderedHashes_, i1, valid1Lower, valid1Upper, hash1);
+                size_t i2Last = extend(seqKmerHashes, i2, valid2Lower, valid2Upper, hash2);
 
-                if (i1Try < orderedHashes_.size()) {
-                    int32_t hash1Try = orderedHashes_[i1Try].hash;
-                    int32_t pos1Try = orderedHashes_[i1Try].pos;
-
-                    while (hash1Try == hash1 && pos1Try >= valid1Lower && pos1Try < valid1Upper) {
-                        i1Last = i1Try;
-                        ++i1Try;
-
-                        if (i1Try >= orderedHashes_.size()) {
-                            break;
-                        }
-
-                        hash1Try = orderedHashes_[i1Try].hash;
-                        pos1Try = orderedHashes_[i1Try].pos;
-                    }
-                }
-
-                //move the index to last point of same hash
-                size_t i2Last = i2;
-                size_t i2Try = i2 + 1;
-
-                if (i2Try < seqKmerHashes.size()) {
-                    int32_t hash2Try = seqKmerHashes[i2Try].hash;
-                    int32_t pos2Try = seqKmerHashes[i2Try].pos;
-
-                    while (hash2Try == hash2 && pos2Try >= valid2Lower && pos2Try < valid2Upper) {
-                        i2Last = i2Try;
-                        ++i2Try;
-
-                        if (i2Try >= seqKmerHashes.size()) {
-                            break;
-                        }
-
-                        hash2Try = seqKmerHashes[i2Try].hash;
-                        pos2Try = seqKmerHashes[i2Try].pos;
-                    }
-                }
-
-                //store the match and update the counters
+                // store the match and update the counters
                 if (i1 != i1Last && i2 != i2Last) {
                     int32_t pos1New = orderedHashes_[i1Last].pos;
                     int32_t pos2New = seqKmerHashes[i2Last].pos;
@@ -211,7 +190,7 @@ void BottomOverlapSketch::recordMatchingKmers(MatchData &matchData,
                     i1 = i1Last + 1;
                     i2 = i2Last + 1;
                 } else {
-                    //simply move on if they don't match
+                    // simply move on if they don't match
                     ++i1;
                     ++i2;
                 }
@@ -250,13 +229,10 @@ OverlapInfo BottomOverlapSketch::getOverlapInfo(const BottomOverlapSketch &toSeq
         return OverlapInfo::empty();
     }
 
-
     matchData.getMedianShift();
     matchData.getAbsMaxShift();
     double score = computeKBottomSketchJaccard(orderedHashes_,
                                                toSequence.orderedHashes_,
-//                                               matchData.getMedianShift(),
-//                                               matchData.getAbsMaxShift(),
                                                edgeData->a1,
                                                edgeData->a2,
                                                edgeData->b1,

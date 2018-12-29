@@ -45,12 +45,6 @@ struct HitCounter {
         ++count;
         return *this;
     }
-
-    //TODO: reconsider this instead addHit function, maybe more readable
-//    HitCounter &operator++() {
-//        ++count;
-//        return *this;
-//    }
 };
 
 #endif //HitCounter_HPP

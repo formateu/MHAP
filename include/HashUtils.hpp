@@ -9,11 +9,14 @@
 #include <vector>
 #include <string>
 
+#include <Sequence.hpp>
+
 /**
  * @brief Wrapper class for hashing functions.
  */
 class HashUtils {
 public:
+    // DEPRECATED: TODO: remove
     /**
      * Calculates hash values encoded on unsigned 64-bit integers
      * for sequences based on given parameters.
@@ -29,6 +32,7 @@ public:
                                               int32_t seed,
                                               bool doReverseCompliment);
 
+    // DEPRECATED: TODO: remove
     /**
      * Calculates hash values encoded on unsigned 32-bit integers
      * for sequences based on given parameters. Random number generator's seed
@@ -42,6 +46,34 @@ public:
     std::vector<int32_t> computeSeqHashes(const std::string &seq,
                                           size_t nGramSize,
                                           bool doReverseCompliment);
+
+    /**
+     * Return hash value for given k-mer.
+     * If doReverseCompliment, then reverse-complementary k-mer is lexically
+     * compared and smaller string is hashed.
+     * @param Hasher Hashing class,
+     * must implement putEncodedChars(std::string_view) and hash() methods.
+     * @param kmer view on k-mer data.
+     * @param hasher Hasher class object.
+     * @param doReverseCompliment flag determining whether process reverse-complementary k-mer.
+     * @return hash value for given k-mer (type is Hasher dependent).
+     */
+    template<class Hasher>
+    static inline auto hashKmer(std::string_view kmer, Hasher &hasher, bool doReverseCompliment) {
+        std::string kmerRevCompl;
+
+        if (doReverseCompliment) {
+            kmerRevCompl = Sequence::revCompSeq(kmer);
+
+            if (kmerRevCompl.compare(kmer) < 0) {
+                kmer = kmerRevCompl;
+            }
+        }
+
+        hasher.putUnencodedChars(kmer);
+
+        return hasher.hash();
+    }
 };
 
 #endif //HashUtils_HPP

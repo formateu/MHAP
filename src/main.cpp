@@ -35,6 +35,7 @@ int main(int argc, char **argv) {
         double AcceptScore = 0.78;
 
         SequenceSketchStreamer seqStreamer(longReadsFile,
+                                           1U,
                                            MinOlapLength,
                                            KmerSize,
                                            NumHashes,

@@ -87,8 +87,8 @@ protected:
     using KmerHashes = std::vector<HashPosPair>;
 
     size_t kmerSize_; /**< size of k-mer used to create K-Bottom sketch.*/
-    KmerHashes orderedHashes_; /**< internal vector of hash, position pairs. */
     size_t seqLength_; /**< length of sketched sequence. */
+    KmerHashes orderedHashes_; /**< internal vector of hash, position pairs. */
 
     //TODO: has to be static?
     /**
@@ -114,6 +114,35 @@ protected:
      * @param seqKmerHashes internal hash, position vector of another sequence sketch.
      */
     void recordMatchingKmers(MatchData &matchData, const KmerHashes &seqKmerHashes) const;
+
+    /**
+     * TODO: rename
+     * Finds last position in vector with certain hash value.
+     * @param seqHashes internal hash, position vector of another sequence sketch.
+     * @param i current index in internal hash.
+     * @param validLower lower boundary.
+     * @param validUpper higher boundary.
+     * @param hash explicit hash value.
+     * @return last position with same hash value.
+     */
+    inline static size_t extend(const KmerHashes &seqHashes,
+                                size_t i,
+                                int32_t validLower,
+                                int32_t validUpper,
+                                int32_t hash);
+
+    /**
+     * Creates internal vector of K-Bottom sketch from raw sequence data based on given parameters.
+     * @param seq raw sequence data.
+     * @param kmerSize length of the k-mer.
+     * @param sketchSize number of hash values used to represent a sequence.
+     * @param doReverseCompliment flag determines whether reverse-compliment sequences are processed.
+     * @return vector of hash, pos pairs.
+     */
+    KmerHashes initializeSketch(const std::string &seq,
+                                size_t kmerSize,
+                                size_t sketchSize,
+                                bool doReverseCompliment);
 };
 
 #endif //BottomOverlapSketch_HPP

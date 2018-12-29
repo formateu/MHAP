@@ -28,7 +28,7 @@ struct SequenceId {
      * Creates SequenceId object assuming that sequence is forward.
      * @param id ordinal sequence number in input stream.
      */
-    SequenceId(const std::size_t &id) : SequenceId(id, true) {} //default forward
+    explicit SequenceId(const std::size_t &id) : SequenceId(id, true) {} //default forward
 
     /**
      * Comparison operator for SequenceId class.

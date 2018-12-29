@@ -1,8 +1,12 @@
 #include <MinHashSketch.hpp>
+#include <Sequence.hpp>
 #include <HashUtils.hpp>
 #include <HitCounter.hpp>
 
 #include <unordered_map>
+#include <string_view>
+
+#include <GM3cpp/Murmur3_128.hpp>
 
 //public
 MinHashSketch::MinHashSketch(const std::string &seq,
@@ -23,27 +27,31 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
                                              size_t numHashes,
                                              bool doReverseCompliment,
                                              double repeatWeight) {
-    auto kmerHashes{HashUtils::computeSeqHashesLong(seq, nGramSize, 0U, doReverseCompliment)};
-
+    // create hash map in-place not from a vector of hashes.
     std::unordered_map<int64_t, HitCounter> hitMap;
+    std::string_view seqView{seq};
+    size_t numOfKmers = seq.size() - nGramSize + 1;
+    GM3cpp::Murmur3_128 hasher(0U);
 
     /**
      * Find all unique kmers with their frequencies
      */
-     // faster to copy 32bit int
-    for (const auto kmer : kmerHashes) {
-        //TODO: maybe implement kmerFilter later
-        if (hitMap.find(kmer) == hitMap.end()) {
-            hitMap.emplace(kmer, 1U);
+    for (size_t i = 0UL; i < numOfKmers; ++i) {
+        auto kmer = seqView.substr(i, nGramSize);
+        auto hashedKmer = HashUtils::hashKmer(kmer, hasher, doReverseCompliment);
+        hasher.reset();
+
+        if (hitMap.find(hashedKmer) == hitMap.end()) {
+            hitMap.emplace(hashedKmer, 1U);
         } else {
-            hitMap[kmer].addHit();
+            hitMap[hashedKmer].addHit();
         }
+
     }
 
     std::vector<int32_t> hashes(std::max(1UL, numHashes), 0);
+    // each function call has own best vector for parallel execution
     std::vector<int64_t> best(numHashes, std::numeric_limits<int64_t>::max());
-
-    //size_t numberValid = 0;
 
     /**
      * According to repeatWeight, choose n smallest
@@ -58,8 +66,6 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
             weight = 1.0f;
         }
 
-        //is this even occurs?
-        //FIXME: this does not occur (always one or more)
         if (weight <= 0) {
             continue;
         }
@@ -72,10 +78,9 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
                 // XORShift Random Number Generators
                 // https://www.javamex.com/tutorials/random_numbers/xorshift.shtml
                 // probably from here ^^
-                x ^= (x << 21);
-                //unsigned shift from Java equivalent
-                x ^= (int64_t)((uint64_t)x >> 35);
-                x ^= (x << 4);
+                x ^= (x << 21U);
+                x ^= (int64_t) ((uint64_t) x >> 35U);
+                x ^= (x << 4U);
 
                 if (x < best[word]) {
                     best[word] = x;
@@ -83,7 +88,7 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
                     if (word % 2 == 0) {
                         hashes[word] = static_cast<int32_t>(key);
                     } else {
-                        hashes[word] = static_cast<int32_t>((int64_t)((uint64_t)key >> 32));
+                        hashes[word] = static_cast<int32_t>((int64_t) ((uint64_t) key >> 32U));
                         //unsigned shift no effect on unsigned value
                     }
                 }
