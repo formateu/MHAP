@@ -66,8 +66,8 @@ EdgeDataPtr MatchData::computeEdges() {
     // get edge info uniformly minimum variance unbiased (UMVU) estimators
     // a = (n*a-b)/(n-1)
     // b = (n*b-a)/(n-1)
-    auto n = static_cast<double>(validCount);
-    auto n_1 = n - 1;
+    int32_t n = validCount;
+    double n_1 = n - 1;
 
     double na1_b1 = n * leftEdge1 - rightEdge1;
     double nb1_a1 = n * rightEdge1 - leftEdge1;

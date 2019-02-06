@@ -56,6 +56,7 @@ double BottomOverlapSketch::computeKBottomSketchJaccard(const KmerHashes &seq1Ha
 
     auto fillHashPosArrays = [](const auto &seqHashes, auto &array, auto low, auto high) {
         int32_t s = 0;
+        // think how to prevent copying here
         for (const auto[hash, pos] : seqHashes) {
             if (pos >= low && pos <= high) {
                 array[s].hash = hash;
@@ -182,7 +183,7 @@ void BottomOverlapSketch::recordMatchingKmers(MatchData &matchData,
                 size_t i2Last = extend(seqKmerHashes, i2, valid2Lower, valid2Upper, hash2);
 
                 // store the match and update the counters
-                if (i1 != i1Last && i2 != i2Last) {
+                if (i1 != i1Last || i2 != i2Last) {
                     int32_t pos1New = orderedHashes_[i1Last].pos;
                     int32_t pos2New = seqKmerHashes[i2Last].pos;
 
