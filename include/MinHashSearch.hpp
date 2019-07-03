@@ -7,8 +7,7 @@
 
 #include <list>
 #include <vector>
-//#include <unordered_map>
-#include <google/sparse_hash_map>
+#include <unordered_map>
 
 
 #include "SequenceSketchStreamer.hpp"
