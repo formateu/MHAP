@@ -1,0 +1,9 @@
+language: cpp
+compiler:
+    - clang
+    - gcc
+dist: bionic
+script:
+    - cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug
+    - cmake -- build . --target all
+
