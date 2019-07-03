@@ -3,6 +3,8 @@ compiler:
     - clang
     - gcc
 dist: bionic
+install:
+    - sudo apt-get install gcc g++ clang ninja-build
 script:
     - cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug
     - cmake -- build . --target all
