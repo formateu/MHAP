@@ -7,5 +7,5 @@ install:
     - sudo apt-get install gcc g++ clang ninja-build libboost-all-dev
 script:
     - cmake -G Ninja -DCMAKE_BUILD_TYPE=Debug
-    - cmake -- build . --target all
+    - ninja
 
