@@ -7,8 +7,8 @@
 
 #include <list>
 #include <vector>
-#include <unordered_map>
 
+#include <absl/container/flat_hash_map.h>
 
 #include "SequenceSketchStreamer.hpp"
 #include "MatchResult.hpp"
@@ -73,8 +73,8 @@ protected:
      */
     void addData(SequenceSketchStreamer &seqStreamer, bool doReverseCompliment);
 private:
-    std::vector<std::unordered_map<int32_t, std::vector<SequenceId>>> hashes_; /**< TODO: fill */
-    std::unordered_map<SequenceId, SequenceSketch, SequenceIdHasher>
+    std::vector<absl::flat_hash_map<int32_t, std::vector<SequenceId>>> hashes_; /**< TODO: fill */
+    absl::flat_hash_map<SequenceId, SequenceSketch, SequenceIdHasher>
         sequenceVectorHash_; /**< map: Id -> Sketch. */
 //    size_t numHashes_; /**< number of hashes in MinHash sketch. */
     size_t numMinMatches_; /**< minimum number of matches needed to record overlap.*/

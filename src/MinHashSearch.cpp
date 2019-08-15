@@ -75,7 +75,7 @@ std::list<MatchResult> MinHashSearch::findMatches() {
 
 std::list<MatchResult> MinHashSearch::findMatches(const SequenceSketch &seqHashes, bool toSelf) {
     const auto &minHash = seqHashes.getMinHashes();
-    std::unordered_map<SequenceId, HitCounter, SequenceIdHasher> bestSequenceHit;
+    absl::flat_hash_map<SequenceId, HitCounter, SequenceIdHasher> bestSequenceHit;
 
     const auto &minHashes = minHash.getMinHashArray();
 

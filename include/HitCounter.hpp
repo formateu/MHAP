@@ -29,13 +29,15 @@ struct HitCounter {
      * Deleted copy constructor for HitCounter struct.
      * @param oth const reference to other HitCounter object.
      */
-    HitCounter(const HitCounter &oth) = delete;
+//    HitCounter(const HitCounter &oth) = delete;
+    // ^^ commented out because of absl::flat_hash_map restrictions
 
     /**
      * Deleted move constructor for HitCounter struct.
      * @param oth r-value reference to other HitCounter object.
      */
-    HitCounter(HitCounter &&oth) = delete;
+//    HitCounter(HitCounter &&oth) = delete;
+    // ^^ commented out because of absl::flat_hash_map restrictions
 
     /**
      * Increments counter.

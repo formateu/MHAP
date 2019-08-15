@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(mhap_cpp)
 
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb -Wall -Wextra --coverage")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -ggdb -Wall -Wextra --coverage -fPIC")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
 
 #Boost
@@ -24,7 +24,8 @@ add_library(MHAP SHARED
 target_include_directories(MHAP PRIVATE include)
 target_include_directories(MHAP PRIVATE GM3cpp)
 
-add_subdirectory("GM3cpp")
+add_subdirectory(GM3cpp)
+add_subdirectory(abseil-cpp exclude_from_all)
 
 add_executable(mhap
         src/main.cpp
@@ -52,6 +53,8 @@ target_include_directories(test_mhap PRIVATE include)
 
 target_link_libraries(MHAP
         GM3cpp
+        absl::base
+        absl::flat_hash_map
         )
 
 target_link_libraries(test_mhap

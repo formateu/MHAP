@@ -7,6 +7,7 @@
 #include <string_view>
 
 #include <GM3cpp/Murmur3_128.hpp>
+#include <absl/container/flat_hash_map.h>
 
 //public
 MinHashSketch::MinHashSketch(const std::string &seq,
@@ -28,7 +29,7 @@ MinHashSketch::computeNgramMinHashesWeighted(const std::string &seq,
                                              bool doReverseCompliment,
                                              double repeatWeight) {
     // create hash map in-place not from a vector of hashes.
-    std::unordered_map<int64_t, HitCounter> hitMap;
+    absl::flat_hash_map<int64_t, HitCounter> hitMap;
     std::string_view seqView{seq};
     size_t numOfKmers = seq.size() - nGramSize + 1;
     GM3cpp::Murmur3_128 hasher(0U);
