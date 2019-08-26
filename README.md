@@ -1,9 +1,5 @@
 # MHAP
-
-Branch|Status
----|---
-<!--master|[![Build Status](https://travis-ci.org/richelbilderbeek/travis_gcc_cpp17.svg?branch=master)](https://travis-ci.org/richelbilderbeek/travis_gcc_cpp17)-->
-<!--develop|[![Build Status](https://travis-ci.org/richelbilderbeek/travis_gcc_cpp17.svg?branch=develop)](https://travis-ci.org/richelbilderbeek/travis_gcc_cpp17)-->
+[![Build Status](https://travis-ci.org/formateu/MHAP.svg?branch=develop)](https://travis-ci.org/formateu/MHAP)
 
 This repository contains simplified, cleaned-up and rewritten in modern C++ version of https://github.com/marbl/MHAP:
 
